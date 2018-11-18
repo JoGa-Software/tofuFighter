@@ -1,0 +1,27 @@
+{
+  "name": "tofu-fighter",
+  "version": "0.0.1",
+  "description": "fighting tofu",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "socket.io": "1.5.1"
+  },
+  "engines": {
+    "node": ">=6.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gsanchez1117/tofuFighter"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "webgl",
+    "game",
+    "multiplayer"
+  ],
+  "license": "MIT"
+}
