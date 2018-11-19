@@ -2,9 +2,9 @@
   "name": "tofu-fighter",
   "version": "0.0.1",
   "description": "fighting tofu",
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node main.js"
   },
   "dependencies": {
     "socket.io": "1.5.1"

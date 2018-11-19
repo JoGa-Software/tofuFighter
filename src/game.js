@@ -7,6 +7,8 @@
 var user_id;
 var connected = false;
 var socket;
+var ROTATIONAL_INERTIA = true;
+var flashColor = [1, 1, 1];
 
 var COLORS = [
 	[1.0, 1.0, 1.0],
@@ -27,80 +29,14 @@ var LEVEL_SIZE = 30;
 var NUM_BOXES = 40;
 var NUM_PICKUPS = 20;
 
-// box level
-function createLevel()
-{
-	var pulse = 0.0;
-    
-	var texture = loadTexture('thin.png');
-    var mesh = loadMesh(BOX_MESH);
-	
-	var size = LEVEL_SIZE * 10.0;
-	var offs = size / 2.0;	
-	
-	// throw some boxes down semi randomly
-	var boxes = [];
-	var x = 7;
-	var y = 13;
-	for (var i = 1; i <= NUM_BOXES; i++)
-	{
-		x = (3*x + 23*i) % LEVEL_SIZE;
-		y = (7*y + 17*i) % LEVEL_SIZE;
-		boxes.push([x, y]);
-	}
-	
-	// make them not go-through-able
-	for (box in boxes)
-	{
-		bounds.push({ 
-			min: [boxes[box][0]*10 - offs, -10, boxes[box][1]*10 - offs],
-			max: [boxes[box][0]*10 - offs + 10, 10, boxes[box][1]*10 - offs + 10]
-		});
-	}
-	
-	// make the arena not-leave-able
-	bounds.push({min: [-size, -size, -size], max: [size, 0, size]});
-	bounds.push({min: [-size,  size, -size], max: [size, 2*size, size]});
-	bounds.push({min: [-size, -size, -size], max: [-offs,size, size]});
-	bounds.push({min: [ offs, -size, -size], max: [size, size, size]});
-	bounds.push({min: [-size, -size, -size], max: [size, size,-offs]});
-	bounds.push({min: [-size, -size,  offs], max: [size, size, size]});
-	
-	return {
-		update: function (dt) { pulse += dt * 1.5; },
-		render: function (worldMtx)
-		{
-			// draw the arena
-			setTexture(texture);
-			setTexScale(LEVEL_SIZE);
-			setColor([0.0, 0.0, 1.0]);
-			setPulse(Math.sin(pulse)*0.4 + 0.4);
-			mat4.translate(worldMtx, [-offs, -size, -offs]);
-			mat4.scale(worldMtx, [size, size, size]);	
-			drawMesh(mesh, worldMtx);
-			
-			// draw all the little boxes
-			mat4.translate(worldMtx, [0.0, 1.0, 0.0]);
-			setTexScale(1.0);
-			setColor([1.0, 0.0, 1.0]);
-			mat4.scale(worldMtx, [10.0/size, 10.0/size, 10.0/size]);
-			for (box in boxes)
-			{
-				mat4.translate(worldMtx, [boxes[box][0] * 1.0, 0.0, boxes[box][1] * 1.0]);
-				drawMesh(mesh, worldMtx);
-				mat4.translate(worldMtx, [boxes[box][0] * -1.0, 0.0, boxes[box][1] * -1.0]);
-			}
-		}
-	};
-}
 
 var tanks = [];
 
 // if you use your address bar to change these, thats cheating
-var TANK_FORWARD_SPEED = 35.0;
-var TANK_BOOST_SPEED   = 80.0;
-var TANK_REVERSE_SPEED = 16.0;
-var GRAVITY			   = 30.0;
+var TANK_FORWARD_SPEED = 80.0;
+var TANK_BOOST_SPEED   = 100.0;
+var TANK_REVERSE_SPEED = 65.0;
+var GRAVITY			   = 300.0;
 
 // tank entity
 function createTank()
@@ -109,20 +45,20 @@ function createTank()
 	var t = {
 		vel: 	[0, 0, 0],
 		accl: 	[0, -GRAVITY, 0],
-		drag:	2.0,
+		drag:	5.0,
 		rot:	0,
 		rotv:	0,
 		roll:	0,
 		pitch:	0,		
-		bounds: {min: [-1.0, 0.0, -1.0], max: [1.0, 1.0, 1.0]},
-		color:	[0, 1, 0],
+		bounds: {min: [-1.0, 0.0, -1.0], max: [1.0, 2.0, 1.0]},
+		color:	[1, 1, 1],
 		health: 5,
 		boostTime: 0
 	};
 	
 	// private properties	
 	var texture = loadTexture('thick.png');
-    var mesh = loadMesh(TANK_MESH);
+    var mesh = BufferMesh(TANK_MESH);
 	var hit = 0;
 	var spawnTimer = 1.0;
 	
@@ -139,8 +75,8 @@ function createTank()
 			if (t.boostTime > 0)
 				t.boostTime -= dt;
 		
-			physics(t, dt);
-			collision(t, bounds);
+//			physics(t, dt);
+//			collision(t, bounds);
 			t.checkForPowerups();
 		}
 		else
@@ -153,11 +89,11 @@ function createTank()
 	
 	t.checkForPowerups = function ()
 	{
-		for (p in powerups)
-		{
-			if (checkCollision(t, powerups[p]))
-				powerups[p].pickup(t);
-		}
+		// for (p in powerups)
+		// {
+		// 	if (checkCollision(t, powerups[p]))
+		// 		powerups[p].pickup(t);
+		// }
 	}
 		
 	t.render = function (worldMtx)
@@ -165,9 +101,9 @@ function createTank()
 		if (t.pos)
 		{
 			// render state
-			setPulse(hit);
-			setTexScale(1.0);
-			setColor(t.color);			
+			//setPulse(hit);
+			//setTexScale(1.0);
+			//setColor([1, 1, 1]);			
 			setTexture(texture);
 			
 			// position
@@ -177,7 +113,7 @@ function createTank()
 			mat4.rotate(worldMtx, t.pitch, [0.0, 0.0, 1.0]);
 			
 			// draw
-			drawMesh(mesh, worldMtx);
+			DrawMesh(mesh, worldMtx);
 			
 			if (t.boostTime > 0)
 			{
@@ -188,11 +124,11 @@ function createTank()
 				for (var j = 0; j < 2; j++)
 				{
 					alpha *= 0.6;
-					setColor(t.color, alpha);				
+					//setColor(t.color, alpha);				
 					mat4.rotate(worldMtx, -t.rot, [0.0, 1.0, 0.0]);
 					mat4.translate(worldMtx, [t.vel[0] * -0.02 - t.accl[0] * 0.001, t.vel[1] * -0.02, t.vel[2] * -0.02 - t.accl[2] * 0.001]);
 					mat4.rotate(worldMtx, t.rot + t.rotv * -0.06, [0.0, 1.0, 0.0]);
-					drawMesh(mesh, worldMtx);
+					DrawMesh(mesh, worldMtx);
 				}
 				
 				gl.disable(gl.BLEND);
@@ -287,7 +223,7 @@ function createExplosion(pos, color, num)
 	}
 	
 	var texture = loadTexture('thick.png');
-	var box = loadMesh(BOX_MESH);
+	var box = BufferMesh(BOX_MESH);
 	
 	explosion.update = function (dt)
 	{
@@ -303,9 +239,9 @@ function createExplosion(pos, color, num)
 	explosion.render = function(worldMtx)
 	{
 		var alpha = (t < 0) ? 1 : 1 - t;
-		setPulse(0);
-		setTexScale(1.0);
-		setColor([color[0], color[1], color[2], alpha]);			
+//		setPulse(0);
+//		setTexScale(1.0);
+//		setColor([color[0], color[1], color[2], alpha]);			
 		setTexture(texture);
 		
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -333,7 +269,7 @@ function createExplosion(pos, color, num)
 			mat4.scale(mtx, [z, z, z]);
 			mat4.translate(mtx, [-0.5, -0.5, -0.5]);			
 			
-			drawMesh(box, mtx);
+			DrawMesh(box, mtx);
 		}
 		
 		gl.disable(gl.BLEND);
@@ -364,7 +300,7 @@ function createBullet(shooter, side)
     var life = BULLET_LIFE;
     var color = shooter.color;
     var texture = loadTexture('thick.png');
-    var mesh = loadMesh(BULLET_MESH);
+    var mesh = BufferMesh(BULLET_MESH);
 	
     b.vel[0] = Math.sin(b.rot-Math.PI/2.0) * BULLET_SPEED;
 	b.vel[2] = Math.cos(b.rot-Math.PI/2.0) * BULLET_SPEED;
@@ -378,23 +314,23 @@ function createBullet(shooter, side)
 	// methods
     b.update = function(dt)
     {
-		physics(b, dt);
+//		physics(b, dt);
 		
-		for (t in tanks)
-		{
-			if (tanks[t] != shooter && checkCollision(tanks[t], b))
-			{
-				tanks[t].hit();
-				entities.push(createExplosion(b.pos, tanks[t].color, 2));
-				life = 0;
-			}	
-		}
+		// for (t in tanks)
+		// {
+		// 	if (tanks[t] != shooter && checkCollision(tanks[t], b))
+		// 	{
+		// 		tanks[t].hit();
+		// 		entities.push(createExplosion(b.pos, tanks[t].color, 2));
+		// 		life = 0;
+		// 	}	
+		// }
 		
-		if (collision(b, bounds))
-		{
-			life = 0;
-			entities.push(createExplosion(b.pos, color, 1));
-		}
+		// if (collision(b, bounds))
+		// {
+		// 	life = 0;
+		// 	entities.push(createExplosion(b.pos, color, 1));
+		// }
         
         life -= dt;
         if (life < 0)
@@ -404,9 +340,9 @@ function createBullet(shooter, side)
     b.render = function(worldMtx)
     {
         // render state
-        setPulse(0.0);
-        setTexScale(0.01);
-        setColor(color);			
+//        setPulse(0.0);
+//        setTexScale(0.01);
+//        setColor(color);			
         setTexture(texture);
 			
         // position
@@ -416,7 +352,7 @@ function createBullet(shooter, side)
 		mat4.scale(worldMtx, [2.0, 1.0, 1.0]);
 			
         // draw
-        drawMesh(mesh, worldMtx);
+        DrawMesh(mesh, worldMtx);
     };
     
     return b;
@@ -438,7 +374,7 @@ function createHealth(location)
 	var rot = 0.0;
     
     var texture = loadTexture('thick.png');
-    var mesh = loadMesh(BOX_MESH);
+    var mesh = BufferMesh(BOX_MESH);
     
     health.update = function(dt)
     {
@@ -450,7 +386,7 @@ function createHealth(location)
     health.render = function(worldMtx)
     {
         // render state
-        setPulse(0.0);
+        //setPulse(0.0);
         setTexScale(0.01);
         setColor([0.0, 1.0, 0.0]);
         setTexture(texture);
@@ -464,7 +400,7 @@ function createHealth(location)
 		mat4.translate(worldMtx, [-0.5, 0.0, -0.5]);
 		
         // draw
-        drawMesh(mesh, worldMtx);    
+        DrawMesh(mesh, worldMtx);    
     };
 	
 	health.pickup = function (tank)
@@ -540,14 +476,14 @@ function makePlane(tank)
 			mat4.rotate(worldMtx, Math.PI/2, [0.0, 1.0, 0.0]);
 			mat4.translate(worldMtx, [-6.0, 0.5, 0.0]);		
 			mat4.scale(worldMtx, [12.0, 0.2, 1.0]);
-			drawMesh(BOX_MESH, worldMtx);
+			DrawMesh(BOX_MESH, worldMtx);
 			
 			// draw blade 1
 			mat4.scale(worldMtx, [0.08, 5.0, 1.0]);
 			mat4.rotate(worldMtx, props, [0.0, 0.0, 1.0]);		
 			mat4.translate(worldMtx, [-1.5, 0.0, 0.0]);
 			mat4.scale(worldMtx, [3.0, 0.3, 0.05]);
-			drawMesh(BOX_MESH, worldMtx);
+			DrawMesh(BOX_MESH, worldMtx);
 			
 			// draw blade 2
 			mat4.scale(worldMtx, [0.333, 3.333, 20]);
@@ -557,7 +493,7 @@ function makePlane(tank)
 			mat4.rotate(worldMtx, -props, [0.0, 0.0, 1.0]);
 			mat4.translate(worldMtx, [-1.5, 0.0, 0.0]);
 			mat4.scale(worldMtx, [3.0, 0.3, 0.05]);
-			drawMesh(BOX_MESH, worldMtx);
+			DrawMesh(BOX_MESH, worldMtx);
 		}
 	};
 	
@@ -759,50 +695,50 @@ function createNetPlayer(id)
 function netMessage(resp)
 {
 	console.log(resp);
-	if (resp['event'] == 'hi')
-	{
-		user_id = resp['id'];
-		connected = true;
-		tanks[0].color = COLORS[user_id % COLORS.length];
+	// if (resp['event'] == 'hi')
+	// {
+	// 	user_id = resp['id'];
+	// 	connected = true;
+	// 	tanks[0].color = COLORS[user_id % COLORS.length];
 		
-		/*socket.json.send({
-				event: 'hello',
-				id: user_id
-		});*/
-	}
-	else
-	{
-		var user = resp['id'];
-		if (resp['event'] == 'pos' || resp['event'] == 'shoot')
-		{
-			// find the netplayer or create them		
-			if (!netPlayers[user])
-			{
-				var player = createNetPlayer(user);
-				entities.push(player);
-				netPlayers[user] = player;
-			}
+	// 	/*socket.json.send({
+	// 			event: 'hello',
+	// 			id: user_id
+	// 	});*/
+	// }
+	// else
+	// {
+	// 	var user = resp['id'];
+	// 	if (resp['event'] == 'pos' || resp['event'] == 'shoot')
+	// 	{
+	// 		// find the netplayer or create them		
+	// 		if (!netPlayers[user])
+	// 		{
+	// 			var player = createNetPlayer(user);
+	// 			entities.push(player);
+	// 			netPlayers[user] = player;
+	// 		}
 		
-			// update physics
-			netPlayers[user].netUpdate(resp);
+	// 		// update physics
+	// 		netPlayers[user].netUpdate(resp);
         
-			// pew pew pew
-			if (resp['event'] == 'shoot')
-			{
-				netPlayers[user].shoot(resp['side']);
-			}
-		}
-		else if (resp['event'] == 'die')
-		{
-			if (netPlayers[user])
-				netPlayers[user].die();
-		}
-		else
-		{
-			// unknown event
-			alert("unknown event: " + resp['event']);
-		}
-	}
+	// 		// pew pew pew
+	// 		if (resp['event'] == 'shoot')
+	// 		{
+	// 			netPlayers[user].shoot(resp['side']);
+	// 		}
+	// 	}
+	// 	else if (resp['event'] == 'die')
+	// 	{
+	// 		if (netPlayers[user])
+	// 			netPlayers[user].die();
+	// 	}
+	// 	else
+	// 	{
+	// 		// unknown event
+	// 		alert("unknown event: " + resp['event']);
+	// 	}
+	// }
 }
 
 function netConnect()
@@ -819,44 +755,29 @@ function netConnect()
 // preload for performance
 function loadResources()
 {
-	loadMesh(TANK_MESH);
-	loadMesh(BOX_MESH);
-	loadMesh(BULLET_MESH);
+	BufferMesh(TANK_MESH);
+	BufferMesh(BOX_MESH);
+	BufferMesh(BULLET_MESH);
 	loadTexture('thick.png');
 	loadTexture('thin.png');
 }
 
-function gameInit()
-{
-	loadResources();
-
-	var level = createLevel();
-	var player = createPlayer();
-	gCamera = createTrackingCamera(player);
-	entities = [level, player, gCamera];
+// static crate
+var gBox;
+function Box(position, rotation) {
+	var texs = [CorrugatedSteelTexture, HazardTexture, CrateTexture, DeepPurpleTexture];
+	var tex = CrateTexture();
+	var texture = MakeTexture(tex, 128);
+	var b = DynamicEntity(BOX_MESH, Mat4Scale(5, 5, 5));
+	b.texture = texture;
+	gBox = b;
 	
-	// sprinkle some boost packs on the ground for good measure
-	var x = 7; var y = 17; var offs = LEVEL_SIZE*5;
-	for (var i = 1; i <= NUM_PICKUPS; i++)
-	{
-		x = (3*x + 23*i) % (LEVEL_SIZE-1);
-		y = (7*y + 17*i) % (LEVEL_SIZE-1);	
-		var health = createHealth([x*10 - offs + 5, 0, y*10 - offs + 5]);
-		entities.push(health);
-	}	
-	
-	// rock and roll
-	if (true) {
-		netConnect();
-	} else {
-		connected = true;
-		//connected = true;
-		//socket = {json: {send: function(a) { /*alert(a.event);*/ } } };
+	if (position) {
+		b.pos = position;
+		if (rotation) b.rot = rotation;
 	}
 	
-	startGame();
-  
-	if (false) {
-		netMessage({event: 'hi', id: 1});
-	}
+	return b;
 }
+
+

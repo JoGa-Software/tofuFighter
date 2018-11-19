@@ -115,7 +115,7 @@ function staticFileHandler(filename)
 	};
 }
 
-var root = staticFileHandler("index.html");
+var root = staticFileHandler("src/index.html");
 var handler = {};
 
 function listFile(file) { handler[file] = staticFileHandler(file); }
@@ -124,13 +124,20 @@ function listFile(file) { handler[file] = staticFileHandler(file); }
 handler["index.html"] 	= root;
 handler["socket.io.js"] = staticFileHandler("node_modules/socket.io-client/socket.io.js");
 listFile("favicon.ico");
-listFile("server.js");
-listFile("game.js");
-listFile("tedge.js");
-listFile("meshes.js");
-listFile("glMatrix-0.9.5.min.js");
-listFile("thick.png");
-listFile("thin.png");
+listFile("src/server.js");
+listFile("src/game.js");
+listFile("src/tedge.js");
+listFile("src/main.js");
+listFile("src/dev.js");
+listFile("src/shaders.js");
+listFile("src/physics.js");
+listFile("src/meshes.js");
+listFile("src/csg.js");
+listFile("src/textures.js");
+listFile("src/particles.js");
+listFile("src/glMatrix-0.9.5.min.js");
+listFile("src/thick.png");
+listFile("src/thin.png");
 
 handler["admin"] = admin(stats, statlog);
 
