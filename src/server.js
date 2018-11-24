@@ -125,19 +125,38 @@ handler["index.html"] 	= root;
 handler["socket.io.js"] = staticFileHandler("node_modules/socket.io-client/socket.io.js");
 listFile("favicon.ico");
 listFile("src/server.js");
-listFile("src/game.js");
+listFile("src/temp.js");
 listFile("src/tedge.js");
-listFile("src/main.js");
+listFile("src/utils/GSInput.js");
+listFile("src/net.js");
+listFile("src/screens/GSLoadingScreen.js");
+listFile("src/screens/GSGame.js");
 listFile("src/dev.js");
 listFile("src/shaders.js");
 listFile("src/physics.js");
+
+//meshes
 listFile("src/meshes.js");
+listFile("src/meshes/smg.js");
+
+//stuff
 listFile("src/csg.js");
 listFile("src/textures.js");
 listFile("src/particles.js");
 listFile("src/glMatrix-0.9.5.min.js");
+
+//entities
+listFile("src/entities/GSDynamicEntity.js");
+listFile("src/entities/GSBullet.js");
+listFile("src/entities/GSTofu.js");
+listFile("src/entities/GSPlayer.js");
+listFile("src/entities/GSNetPlayer.js");
+
+//textures
 listFile("src/thick.png");
 listFile("src/thin.png");
+listFile("src/castleTex.png");
+listFile("src/smgTexture.png");
 
 handler["admin"] = admin(stats, statlog);
 

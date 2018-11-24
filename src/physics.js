@@ -802,6 +802,7 @@ function Physics(dt)
 	{
 		// integrate motion
 		var e = physObjects[idx];
+		if (!e.pos){ continue; }
 		//if (e.dynamic || e.old_pos != e.pos)
 		{   
 			e.old_pos = e.pos;

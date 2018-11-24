@@ -692,61 +692,6 @@ function createNetPlayer(id)
 	return player;
 }
 
-function netMessage(resp)
-{
-	console.log(resp);
-	// if (resp['event'] == 'hi')
-	// {
-	// 	user_id = resp['id'];
-	// 	connected = true;
-	// 	tanks[0].color = COLORS[user_id % COLORS.length];
-		
-	// 	/*socket.json.send({
-	// 			event: 'hello',
-	// 			id: user_id
-	// 	});*/
-	// }
-	// else
-	// {
-	// 	var user = resp['id'];
-	// 	if (resp['event'] == 'pos' || resp['event'] == 'shoot')
-	// 	{
-	// 		// find the netplayer or create them		
-	// 		if (!netPlayers[user])
-	// 		{
-	// 			var player = createNetPlayer(user);
-	// 			entities.push(player);
-	// 			netPlayers[user] = player;
-	// 		}
-		
-	// 		// update physics
-	// 		netPlayers[user].netUpdate(resp);
-        
-	// 		// pew pew pew
-	// 		if (resp['event'] == 'shoot')
-	// 		{
-	// 			netPlayers[user].shoot(resp['side']);
-	// 		}
-	// 	}
-	// 	else if (resp['event'] == 'die')
-	// 	{
-	// 		if (netPlayers[user])
-	// 			netPlayers[user].die();
-	// 	}
-	// 	else
-	// 	{
-	// 		// unknown event
-	// 		alert("unknown event: " + resp['event']);
-	// 	}
-	// }
-}
-
-function netConnect()
-{
-	socket = io();
-	socket.on('disconnect', function(){connected = false;});
-	socket.on('message', netMessage);
-}
 
 //////////////////////////////////////////////////////
 // ~THAT'S IT~
@@ -765,12 +710,9 @@ function loadResources()
 // static crate
 var gBox;
 function Box(position, rotation) {
-	var texs = [CorrugatedSteelTexture, HazardTexture, CrateTexture, DeepPurpleTexture];
-	var tex = CrateTexture();
-	var texture = MakeTexture(tex, 128);
-	var b = DynamicEntity(BOX_MESH, Mat4Scale(5, 5, 5));
-	b.texture = texture;
-	gBox = b;
+	var b = StaticEntity({}, BOX_MESH, Mat4Scale(2, 2, 2));
+	b.texture = loadTexture("./src/castleTex.png");
+	
 	
 	if (position) {
 		b.pos = position;
@@ -779,5 +721,4 @@ function Box(position, rotation) {
 	
 	return b;
 }
-
 

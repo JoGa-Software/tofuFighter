@@ -11,8 +11,6 @@ var entities = [];
 var DEV_MODE = false;
 
 // input
-var K_KONAMI = false;
-var KONAMI_CODE = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
 
 // graphics
 var gCamera;
@@ -31,87 +29,6 @@ var abs = Math.abs;
 // timing
 var lastT;
 var curT;
-
-var gLoadingScreen;
-var gLoadingCallback;
-var gLoadIndex;
-var gLoadList;
-function Load(constructorList, callback) {
-	// create the black and white bar
-	gLoadingScreen = LoadingScreen();
-	gLoadingScreen.setProgress(0);
-	gLoadingScreen.render();
-	
-	// store info
-	gLoadList = constructorList;
-	gLoadIndex = 0;
-	if (callback)
-		gLoadingCallback = callback;
-	else
-		gLoadingCallback = runEngine;
-	
-	// start timeout loop
-	window.setTimeout(LoadInstance, 1);
-}
-
-function LoadInstance() {
-	gLoadingScreen.setProgress((gLoadIndex+1)/gLoadList.length);
-	gLoadingScreen.render();
-	
-	var instance = gLoadList[gLoadIndex];
-	if (typeof instance[0] === "number") {
-		for (var i = 0; i < instance[0]; i++) {
-			entities.push(instance[1](instance[2]));
-		}
-	} else {
-		entities.push(instance[0](instance[1]));
-	}
-
-	gLoadIndex++;
-	if (gLoadIndex < gLoadList.length)
-		window.setTimeout(LoadInstance, 1);
-	else
-		gLoadingCallback();
-}
-
-//////////////////////////////////////////////////////
-// GAME MANAGEMENT
-//////////////////////////////////////////////////////
-
-function connect()
-{
-	return 0;
-}
-
-function receive(type, arg)
-{
-	var e = type(arg);
-	entities.push(e);
-	return e;
-}
-
-function receiveAll(type, N, arg)
-{
-	if (N === undefined)
-		return;
-
-	var list = [];
-	for (var i = 0; i < N; i++)
-	{
-		var e = type(arg);
-		list.push(e);
-		entities.push(e);
-	}
-	return list;
-}
-
-function receiveNew(type, arg)
-{
-	var e = type(arg);
-	entities.push(e);
-	return e;
-}
-
 
 //////////////////////////////////////////////////////
 // GRAPHICS
@@ -177,6 +94,10 @@ function initGL()
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);	
 	mat4.perspective(55, gl.viewportWidth / gl.viewportHeight, 0.3, 400.0, pMatrix);
 	gl.uniformMatrix4fv(STD_SHADER.pMatrix, false, pMatrix);
+
+	//cull backfaces
+	gl.enable(gl.CULL_FACE);
+	gl.cullFace(gl.BACK);
 }
 
 // render loop
@@ -505,112 +426,6 @@ function TransformMeshUVs(mesh, affineMatrix) {
 	}
 }
 
-
-//////////////////////////////////////////////////////
-// INPUT
-//////////////////////////////////////////////////////
-var keysDown = {};
-var keysHit = {};
-var buttonsDown = {};
-var buttonsHit = {};
-var mouseX = 0;
-var mouseY = 0;
-
-var lastKeys = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-var K_CTL	= 17;
-var K_1		= 49;
-var K_W		= 87;
-var K_A		= 65;
-var K_S		= 83;
-var K_D		= 68;
-var K_DOWN  = 40;
-var K_RIGHT = 39;
-var K_UP	= 38;
-var K_LEFT  = 37;
-var K_SPACE = 32;
-
-var M_LEFT		= 0;
-var M_MIDDLE 	= 1;
-var M_RIGHT 	= 2;
-
-function InputtingEntity(e, player)
-{
-	e.keyDown = function (key)
-	{
-		return ( (key in keysDown));
-	}
-	
-	e.keyHit = function (key)
-	{
-		return ((key in keysHit));
-	}
-	
-	e.mouseDown = function (button)
-	{
-		return ((button in buttonsDown));
-	}
-	
-	e.mouseHit = function (button)
-	{
-		return ((button in buttonsHit));
-	}
-	
-	e.mousePosition = function ()
-	{
-			return [mouseX/canvas.width, mouseY/canvas.height];
-	}
-	
-	return e;
-}
-
-// input
-function onKeyDown(evt) 
-{
-	if (!evt) evt = window.event;
-	
-	keysDown[evt.keyCode] = true;
-	keysHit[evt.keyCode] = true;
-
-	lastKeys.push(evt.keyCode);
-	lastKeys.splice(0, 1);
-	K_KONAMI = true;
-	for (var i = 0; i < 10; i++)
-		if (lastKeys[i] != KONAMI_CODE[i])
-			K_KONAMI = false;
-}
-
-function onKeyUp(evt) 
-{
-	if (!evt) evt = window.event;
-	if (evt.keyCode in keysDown)
-		delete keysDown[evt.keyCode];
-	
-	if (evt.keyCode == K_1)
-		DEV_MODE = !DEV_MODE;
-}
-
-function onMouseDown(evt) 
-{
-	if (!evt) evt = window.event;
-	buttonsDown[evt.button] = true;
-	buttonsHit[evt.button] = true;
-}
-
-function onMouseUp(evt)
-{
-	if (!evt) evt = window.event;
-	if (evt.button in buttonsDown)
-		delete buttonsDown[evt.button];
-}
-
-function onMouseMove(evt)
-{
-	if (!evt) evt = window.event;
-	mouseX = evt.clientX;
-	mouseY = evt.clientY;
-}
-
 //////////////////////////////////////////////////////
 // GAME
 //////////////////////////////////////////////////////
@@ -664,20 +479,20 @@ function removeEntity(e)
 }
 
 
-function StaticEntity(mesh, mdlMtx)
+function StaticEntity(e, mesh, mdlMtx)
 {
 	if (mdlMtx)
 	{   
 		var origMesh = mesh;
 		mesh = {uvs: origMesh.uvs, count: origMesh.count};
 		mesh.vertices = Mat4TransformPoints(origMesh.vertices, mdlMtx);
-		mesh.normals  = Mat3TransformPoints(origMesh.normals, mdlMtx);
+		if (mesh.normals)
+			mesh.normals  = Mat3TransformPoints(origMesh.normals, mdlMtx);
 	}
 	
-	var e = {};
 	e.mesh = BufferMesh(mesh);
 	
-	e = PhysicalEntity(e, mesh, false);
+	PhysicalEntity(e, mesh, false);
 	e.shader = STD_SHADER;
 	
 	e.render = function()
@@ -690,36 +505,6 @@ function StaticEntity(mesh, mdlMtx)
 		}
 	}
 
-	
-	return e;
-}
-
-function DynamicEntity(origMesh, mdlMtx)
-{
-	var mesh;
-	if (mdlMtx)
-	{   
-		mesh = {uvs: origMesh.uvs, count: origMesh.count};
-		mesh.vertices = Mat4TransformPoints(origMesh.vertices, mdlMtx);
-		mesh.normals  = Mat3TransformPoints(origMesh.normals, mdlMtx);
-	}
-	else
-		mesh = origMesh;
-	
-	BufferMesh(mesh);
-	
-	var e = PhysicalEntity({}, mesh, true);
-	e.shader = STD_SHADER;
-	
-	e.render = function()
-	{
-		if (e.texture !== undefined) {
-			TEX_SHADER.enable(e.texture);
-			DrawMesh(e.mesh, Mat4List(e.matrix), TEX_SHADER);
-		} else {
-			DrawMesh(e.mesh, Mat4List(e.matrix), e.shader);
-		}
-	}
 	
 	return e;
 }
@@ -1094,49 +879,6 @@ function FPSCounter() {
 	return fps;
 }
 
-// loading bar
-function LoadingScreen() {
-	var bar = {progress: 0.0};
-	var mesh = BufferMesh(SQUARE_MESH);
-	var texture = MakeTexture(function () {return [255, 255, 255, 255];}, 16);
-	
-	bar.setProgress = function (percent) {
-		if (percent > 1) percent = 1;
-		bar.progress = percent;
-	}
-	
-	bar.render = function () 
-	{
-		// clear screen
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		
-		var matrix;
-		TEX_SHADER.enable(texture);
-		OrthogonalProjection();
-		gl.depthMask(false);
-		
-		TEX_SHADER.setColor(100,100,100);
-		matrix = Mat4Scale(0.5, 0.15, 1);
-		DrawMesh(mesh, Mat4List(matrix), TEX_SHADER);
-		
-		TEX_SHADER.setColor(0,0,0);
-		matrix = Mat4Scale(0.475, 0.125, 1);
-		DrawMesh(mesh, Mat4List(matrix), TEX_SHADER);
-		
-		if (bar.progress > 0) {
-			TEX_SHADER.setColor(3,3,3);
-			matrix = Mat4Scale(0.45 * bar.progress, 0.1, 1);
-			matrix = Mat4Mult(Mat4Translate(1 - 1/bar.progress, 0, 0), matrix);
-			DrawMesh(mesh, Mat4List(matrix), TEX_SHADER);
-		}
-		
-		gl.depthMask(true);
-		NormalProjection();
-	}
-	return bar;
-}
-
-
 function Camera(vector) {
 	var cameraMtx = mat4.create();
 	mat4.lookAt([0,0,0], vector, [0, 1, 0], cameraMtx);
@@ -1243,38 +985,39 @@ function FPSCamera()
 // team duck 4 lyfe
 
 
-// function createFPSCamera(target){
+function createFPSCamera(target){
 	
-// 	var camera = {
-// 		pos:	[0, 10, 0],
-// 	};
+	var camera = {pos: [0, 0, 0], rot: QuatXYZ(0, 0, 0), offset: [0, 3, 0]};
+	
+	var height = 1.75;
+	var look = [0, 0, 0];
 
-// 	var height = 1.75;
-// 	var look = [0, 0, 0];
 
-// 	camera.update = function(dt){
-// 		if (target && target.pos){
+	var cameraMtx = Mat4List(Matrix4());
+	camera.getMatrix = function(){
+		return cameraMtx;
+	};
 
-// 			//set the camera position
-// 			camera.pos[0] = target.pos[0];
-// 			camera.pos[1] = target.pos[1] + height;
-// 			camera.pos[2] = target.pos[2];
+	camera.update = function(dt){
+		if (target && target.pos){
+			
+			camera.pos = VecAdd(target.pos, [0, height, 0]);
 
-// 			//set the camera look position
-// 			look[0] = camera.pos[0] + Math.sin(target.rot-Math.PI/2.0);
-// 			look[1] = camera.pos[1];
-// 			look[2] = camera.pos[2] + Math.cos(target.rot-Math.PI/2.0);
-// 		}
-// 	};
+			//set the camera look position
+			look[0] = camera.pos[0] + Math.sin(target.rot-Math.PI/2.0);
+			look[1] = camera.pos[1];
+			look[2] = camera.pos[2] + Math.cos(target.rot-Math.PI/2.0);
 
-// 	var cameraMtx = mat4.create();
-// 	camera.getMatrix = function(){
-// 		mat4.lookAt(camera.pos, look, [0.0, 1.0, 0.0], cameraMtx);
-// 		return cameraMtx;
-// 	};
+			camera.rot = target.rot;
+			cameraMtx = Mat4Translate(VecScale(camera.pos, -1));
+			cameraMtx = Mat4Mult(cameraMtx, Mat4World(Vector3(), QuatInverse(camera.rot)));
+			cameraMtx = Mat4List(cameraMtx);
+		}
+	};
 
-// 	return camera;
-// }
+
+	return camera;
+}
 
 // team duck
 
