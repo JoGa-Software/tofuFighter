@@ -710,8 +710,8 @@ function loadResources()
 // static crate
 var gBox;
 function Box(position, rotation) {
-	var b = StaticEntity({}, BOX_MESH, Mat4Scale(2, 2, 2));
-	b.texture = loadTexture("./src/castleTex.png");
+	var b = StaticEntity({}, SQUARE_MAP.staticModels[0].mesh, Mat4Scale(2, 2, 2));
+	b.texture = loadTexture(SQUARE_MAP.staticModels[0].texture);
 	
 	
 	if (position) {

@@ -63,6 +63,7 @@ class GSPlayer extends GSTofu{
     }
 
     shoot(){
+        if (this.dead && this.dead === true){ return; }
         super.shoot();
         game.socket.emit('message', {
             event: 'shoot',

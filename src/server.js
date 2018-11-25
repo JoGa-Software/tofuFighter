@@ -93,7 +93,7 @@ function staticFileHandler(filename)
 	}	
 	
 	var header = {
-		"Server": 			"tank-game",
+		"Server": 			"tofu-game",
 		"ETag": 			etag,
 		"Content-Type": 	content_type,
 		"Content-Length": 	file.length
@@ -127,6 +127,7 @@ listFile("favicon.ico");
 listFile("src/server.js");
 listFile("src/temp.js");
 listFile("src/tedge.js");
+listFile("src/includes.js");
 listFile("src/utils/GSInput.js");
 listFile("src/net.js");
 listFile("src/screens/GSLoadingScreen.js");
@@ -146,6 +147,7 @@ listFile("src/particles.js");
 listFile("src/glMatrix-0.9.5.min.js");
 
 //entities
+listFile("src/entities/GSMap.js");
 listFile("src/entities/GSDynamicEntity.js");
 listFile("src/entities/GSBullet.js");
 listFile("src/entities/GSTofu.js");
@@ -155,10 +157,30 @@ listFile("src/entities/GSNetPlayer.js");
 //textures
 listFile("src/thick.png");
 listFile("src/thin.png");
-listFile("src/castleTex.png");
 listFile("src/smgTexture.png");
+listFile("src/g36cTex.png");
+listFile("src/tofuTex.png");
 
 handler["admin"] = admin(stats, statlog);
+
+//////////////
+//Map Loader//
+//////////////
+function loadMapFiles(){
+	fs.readdir("src/maps", function(err, dirs) {
+		dirs.forEach((dir) => {
+			fs.readdir("src/maps/" + dir, function(err, files) {
+				files.forEach((file) => {
+					var extension = file.split('.').pop();
+					if (extension === 'png' || extension === 'js'){
+						listFile('src/maps/' + dir + '/' + file);
+					}
+				});
+			});
+		});
+	});
+}
+loadMapFiles();
 
 // FILE SERVER ///////////////////////////////////////////////////////////////
 server = http.createServer(function(req, resp)

@@ -43,9 +43,7 @@ class GSGame
 		//show the loading screen and load assets 
 		new GSLoadingScreen([
 			[TOFU_MESH, "mesh"],
-			[BOX_MESH, "mesh"],
 			["src/thick.png", "texture"],
-			["src/castleTex.png", "texture"]
 		], () => {
 			//call finished loadding after loading has finished
 			this.finishedLoading();

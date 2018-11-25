@@ -1,14 +1,15 @@
+
 class GSTofu extends GSDynamicEntity
 {
     constructor(position, rotation)
     {
         super(TOFU_MESH);
 
-        BufferMesh(SMG_MESH);
-        this.gunTexture = loadTexture("./src/smgTexture.png");
+        BufferMesh(G36C_MESH);
+        this.gunTexture = loadTexture("./src/g36cTex.png");
 
         //set the texture of tofu
-        this.texture = loadTexture("./src/thick.png");
+        this.texture = loadTexture("./src/tofuTex.png");
         
         //set the position
         this.pos = position ? position : [0, 0, 0];
@@ -29,27 +30,27 @@ class GSTofu extends GSDynamicEntity
     }
 
     forward(){
-        this.acl = VecAdd(this.acl, VecRotate(VecScale(VEC_FORWARD, -this.speed), this.rot));
-    }
-
-    reverse(){
         this.acl = VecAdd(this.acl, VecRotate(VecScale(VEC_FORWARD, this.speed), this.rot));
     }
 
+    reverse(){
+        this.acl = VecAdd(this.acl, VecRotate(VecScale(VEC_FORWARD, -this.speed), this.rot));
+    }
+
     left(){
-        this.rot = QuatMult(this.rot, QuatXYZ(0.0, this.rotSpeed, 0.0));
+        this.rot = QuatMult(this.rot, QuatXYZ(0.0, -this.rotSpeed, 0.0));
     }
     
     right(){
-        this.rot = QuatMult(this.rot, QuatXYZ(0.0, -this.rotSpeed, 0.0));
+        this.rot = QuatMult(this.rot, QuatXYZ(0.0, this.rotSpeed, 0.0));
     }
 
     strafeLeft(){
-        this.acl = VecAdd(this.acl, VecRotate(VecScale(VEC_LEFT, this.speed), this.rot));
+        this.acl = VecAdd(this.acl, VecRotate(VecScale(VEC_LEFT, -this.speed), this.rot));
     }
 
     strafeRight(){
-        this.acl = VecAdd(this.acl, VecRotate(VecScale(VEC_RIGHT, this.speed), this.rot));
+        this.acl = VecAdd(this.acl, VecRotate(VecScale(VEC_LEFT, this.speed), this.rot));
     }
 
     mouseX(mouseX){
@@ -58,8 +59,8 @@ class GSTofu extends GSDynamicEntity
 
     shoot(){
         if (this.shootDelay <= 0){
-            var pos = Mat4TransformPoint([0.3, 1, -1], this.matrix);
-            var bullet = new GSBullet(this, pos, QuatMult(this.rot, QuatXYZ(0,Math.PI,0)));
+            var pos = Mat4TransformPoint([-0.35, 1, 1.55], this.matrix);
+            var bullet = new GSBullet(this, pos, this.rot);
             entities.push(bullet);
             this.shootDelay = 0.2;
         }
@@ -101,9 +102,9 @@ class GSTofu extends GSDynamicEntity
         super.render();
 		if (this.gunTexture !== undefined) {
 			TEX_SHADER.enable(this.gunTexture);
-			DrawMesh(SMG_MESH, Mat4List(Mat4Mult(Mat4Translate([0.3, 1, -0.5]),this.matrix)), TEX_SHADER);
+			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.55]),this.matrix)), TEX_SHADER);
 		} else {
-			DrawMesh(SMG_MESH, Mat4List(Mat4Mult(Mat4Translate([0.3, 1, -0.5]),this.matrix)), this.shader);
+			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.55]),this.matrix)), this.shader);
 		}
     }
 

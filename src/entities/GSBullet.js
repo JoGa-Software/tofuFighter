@@ -3,14 +3,14 @@ var BULLET_LIFE = 10;
 class GSBullet extends GSDynamicEntity {
 
     constructor(shooter, pos, rotation){
-        super(SQUARE_MESH);
+        super(SQUARE_MESH, Mat4Scale(.5*.05));
 
         this.texture = GetParticleTexture();
         this.pos = pos;
-        this.vel = Mat4TransformPoint(VecScale(VEC_FORWARD, BULLET_SPEED), Mat4Rotate(rotation));
+        this.vel = Mat4TransformPoint(VecScale(VEC_BACKWARD, BULLET_SPEED), Mat4Rotate(rotation));
         this.force = Vector3();
         this.friction = 0;
-        this.size = .05;
+        this.size = 1;
         this.color = [1,1,0,1];
 
         this.t = 0;

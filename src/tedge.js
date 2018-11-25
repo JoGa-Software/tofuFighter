@@ -971,7 +971,7 @@ function FPSCamera()
 		camera.pos = VecAdd(pos, camera.offset);
 		camera.rot = look;
 		cameraMtx = Mat4Translate(VecScale(camera.pos, -1));
-		cameraMtx = Mat4Mult(cameraMtx, Mat4World(Vector3(), QuatInverse(camera.rot)));
+		cameraMtx = Mat4Mult(cameraMtx, Mat4World(Vector3(), camera.rot));
 		cameraMtx = Mat4List(cameraMtx);
 	}
 	
@@ -989,7 +989,7 @@ function createFPSCamera(target){
 	
 	var camera = {pos: [0, 0, 0], rot: QuatXYZ(0, 0, 0), offset: [0, 3, 0]};
 	
-	var height = 1.75;
+	var height = 1.45;
 	var look = [0, 0, 0];
 
 
@@ -1003,12 +1003,7 @@ function createFPSCamera(target){
 			
 			camera.pos = VecAdd(target.pos, [0, height, 0]);
 
-			//set the camera look position
-			look[0] = camera.pos[0] + Math.sin(target.rot-Math.PI/2.0);
-			look[1] = camera.pos[1];
-			look[2] = camera.pos[2] + Math.cos(target.rot-Math.PI/2.0);
-
-			camera.rot = target.rot;
+			camera.rot = QuatMult(target.rot, QuatXYZ(0, Math.PI, 0));
 			cameraMtx = Mat4Translate(VecScale(camera.pos, -1));
 			cameraMtx = Mat4Mult(cameraMtx, Mat4World(Vector3(), QuatInverse(camera.rot)));
 			cameraMtx = Mat4List(cameraMtx);
