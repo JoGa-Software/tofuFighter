@@ -158,7 +158,7 @@ listFile("src/entities/GSNetPlayer.js");
 listFile("src/thick.png");
 listFile("src/thin.png");
 listFile("src/smgTexture.png");
-listFile("src/g36cTex.png");
+listFile("src/G36CTex.png");
 listFile("src/tofuTex.png");
 
 handler["admin"] = admin(stats, statlog);
