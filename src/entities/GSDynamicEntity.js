@@ -23,10 +23,14 @@ class GSDynamicEntity{
     {
         if (this.texture !== undefined) {
             TEX_SHADER.enable(this.texture);
+            if (this.color) {
+                TEX_SHADER.setColor([this.color[0], this.color[1], this.color[2], 1.0]);
+            }
             DrawMesh(this.mesh, Mat4List(this.matrix), TEX_SHADER);
         } else {
             DrawMesh(this.mesh, Mat4List(this.matrix), this.shader);
         }
+        TEX_SHADER.setColor([1,1,1,1]);
     }
 
 }

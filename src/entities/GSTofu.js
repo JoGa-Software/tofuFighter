@@ -23,7 +23,7 @@ class GSTofu extends GSDynamicEntity
         this.rotSpeed = 0.05;
 
         this.spawnTimer = 1.0;
-        this.shootDelay = 1.0;
+        this.shootDelay = SHOOT_DELAY;
         this.isKillable = true;
         this.health = 100;
         this.dead = false;
@@ -62,7 +62,7 @@ class GSTofu extends GSDynamicEntity
             var pos = Mat4TransformPoint([-0.35, 1, 1.55], this.matrix);
             var bullet = new GSBullet(this, pos, this.rot);
             entities.push(bullet);
-            this.shootDelay = 0.2;
+            this.shootDelay = SHOOT_DELAY;
         }
     }
 
@@ -91,6 +91,9 @@ class GSTofu extends GSDynamicEntity
     }
 
     die(){
+        if (!this.dead) {
+            entities.push(createExplosion(this.pos, this.color, 9));
+        }
         delete this.pos;
         this.dead = true;
         this.spawnTimer = 5.0;
@@ -101,11 +104,15 @@ class GSTofu extends GSDynamicEntity
         if (!this.pos){ return; }
         super.render();
 		if (this.gunTexture !== undefined) {
-			TEX_SHADER.enable(this.gunTexture);
+            TEX_SHADER.enable(this.gunTexture);
+            if (this.color) {
+                TEX_SHADER.setColor([this.color[0], this.color[1], this.color[2], 1.0]);
+            }
 			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.55]),this.matrix)), TEX_SHADER);
 		} else {
 			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.55]),this.matrix)), this.shader);
-		}
+        }
+        TEX_SHADER.setColor([1,1,1,1]);
     }
 
 }

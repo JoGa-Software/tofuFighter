@@ -3,15 +3,18 @@ class GSNetPlayer extends GSTofu{
     constructor(id, position, rotation){
         super(position, rotation);
 
+        
         //make the player an inputting entity
         InputtingEntity(this);
-
+        
+        this.color = COLORS[id % COLORS.length];
         this.oldMouseMove = [0, 0];
         this.mouseMove = [0, 0];
         
         this.tick = 0;
         this.keys;
         this.id = id;
+
     }
 
     netUpdate(data){
@@ -67,12 +70,7 @@ class GSNetPlayer extends GSTofu{
             super.spawn();
     }
 
-    die(){
-        game.socket.emit("message", {
-            event: 'die',
-            id: game.user_id
-        });
-        super.die();
+    render() {
+        super.render()
     }
-
 }

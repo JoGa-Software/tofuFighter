@@ -26,8 +26,9 @@ loadIncludes([
 
 //ENTITIES
 loadIncludes([
-    "src/entities/GSMap.js",		
+    "src/entities/GSStaticEntity.js",		
     "src/entities/GSDynamicEntity.js",		
+    "src/entities/GSMap.js",		
     "src/entities/GSBullet.js",		
     "src/entities/GSTofu.js",		
     "src/entities/GSPlayer.js",		

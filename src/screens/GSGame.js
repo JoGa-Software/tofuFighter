@@ -65,8 +65,9 @@ class GSGame
 		this.tofu = new GSPlayer();
 		entities.push(this.tofu);
 		
-		var t3 = Box([0, -10, 0]);
-		entities.push(t3);
+		//add the map 
+		var map = new GSMap([0, -10, 0])//Box([0, -10, 0]);
+		entities.push(map);
 
 		//create the game camera 
 		gCamera = createFPSCamera(this.tofu);//TrackingCamera(this.tofu);

@@ -479,35 +479,35 @@ function removeEntity(e)
 }
 
 
-function StaticEntity(e, mesh, mdlMtx)
-{
-	if (mdlMtx)
-	{   
-		var origMesh = mesh;
-		mesh = {uvs: origMesh.uvs, count: origMesh.count};
-		mesh.vertices = Mat4TransformPoints(origMesh.vertices, mdlMtx);
-		if (mesh.normals)
-			mesh.normals  = Mat3TransformPoints(origMesh.normals, mdlMtx);
-	}
+// function StaticEntity(e, mesh, mdlMtx)
+// {
+// 	if (mdlMtx)
+// 	{   
+// 		var origMesh = mesh;
+// 		mesh = {uvs: origMesh.uvs, count: origMesh.count};
+// 		mesh.vertices = Mat4TransformPoints(origMesh.vertices, mdlMtx);
+// 		if (mesh.normals)
+// 			mesh.normals  = Mat3TransformPoints(origMesh.normals, mdlMtx);
+// 	}
 	
-	e.mesh = BufferMesh(mesh);
+// 	e.mesh = BufferMesh(mesh);
 	
-	PhysicalEntity(e, mesh, false);
-	e.shader = STD_SHADER;
+// 	PhysicalEntity(e, mesh, false);
+// 	e.shader = STD_SHADER;
 	
-	e.render = function()
-	{
-		if (e.texture !== undefined) {
-			TEX_SHADER.enable(e.texture);
-			DrawMesh(e.mesh, Mat4List(e.matrix), TEX_SHADER);
-		} else {
-			DrawMesh(e.mesh, Mat4List(e.matrix), e.shader);
-		}
-	}
+// 	e.render = function()
+// 	{
+// 		if (e.texture !== undefined) {
+// 			TEX_SHADER.enable(e.texture);
+// 			DrawMesh(e.mesh, Mat4List(e.matrix), TEX_SHADER);
+// 		} else {
+// 			DrawMesh(e.mesh, Mat4List(e.matrix), e.shader);
+// 		}
+// 	}
 
 	
-	return e;
-}
+// 	return e;
+// }
 
 function addPoint(mesh, values, x, z, wrap, u, v)
 {

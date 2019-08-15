@@ -10,6 +10,11 @@ class GSPlayer extends GSTofu{
         this.mouseMove = [0, 0];
         
         this.netSync = 0.0;
+
+        this.skyboxTexture = loadTexture('src/skyBox.png');
+        this.skyboxMesh = CloneMesh(SKYBOX_MESH);
+
+        BufferMesh(this.skyboxMesh)
     }
 
     update(dt){
@@ -85,6 +90,23 @@ class GSPlayer extends GSTofu{
             id: game.user_id
         });
         super.die();
+    }
+
+    render() {
+        super.render()
+
+        var rot = QuatInverse(this.rot);
+        rot = QuatMult(rot, QuatXYZ(-Math.PI*0.5, 0, 0))
+
+        var newMat = Mat4Mult(Mat4Translate([-0.2,1.5,0.55]), this.matrix)
+        newMat = Mat4Mult(Mat4Rotate(rot), newMat)
+        newMat = Mat4Mult(Mat4Scale(5,5,5), newMat)
+
+        gl.depthMask(false);
+        TEX_SHADER.enable(this.skyboxTexture);
+        TEX_SHADER.setColor([1,1,1, 1.0]);
+        DrawMesh(this.skyboxMesh, newMat, TEX_SHADER);
+        gl.depthMask(true);
     }
 
 }

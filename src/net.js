@@ -9,6 +9,7 @@ function netMessage(resp)
     {
         game.user_id = resp['id'];
         game.connected = true;
+        game.tofu.color = COLORS[game.user_id % COLORS.length];
     }
     else
     {

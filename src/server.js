@@ -147,17 +147,18 @@ listFile("src/particles.js");
 listFile("src/glMatrix-0.9.5.min.js");
 
 //entities
-listFile("src/entities/GSMap.js");
+listFile("src/entities/GSStaticEntity.js");
 listFile("src/entities/GSDynamicEntity.js");
+listFile("src/entities/GSMap.js");
 listFile("src/entities/GSBullet.js");
 listFile("src/entities/GSTofu.js");
 listFile("src/entities/GSPlayer.js");
 listFile("src/entities/GSNetPlayer.js");
 
 //textures
+listFile("src/skyBox.png");
 listFile("src/thick.png");
 listFile("src/thin.png");
-listFile("src/smgTexture.png");
 listFile("src/G36CTex.png");
 listFile("src/tofuTex.png");
 
@@ -169,6 +170,7 @@ handler["admin"] = admin(stats, statlog);
 function loadMapFiles(){
 	fs.readdir("src/maps", function(err, dirs) {
 		dirs.forEach((dir) => {
+			if (dir == '.DS_Store') {return}
 			fs.readdir("src/maps/" + dir, function(err, files) {
 				files.forEach((file) => {
 					var extension = file.split('.').pop();

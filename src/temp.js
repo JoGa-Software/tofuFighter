@@ -221,10 +221,10 @@ function createExplosion(pos, color, num)
 			p[j] *= l;
 		particles.push(p);
 	}
-	
-	var texture = loadTexture('thick.png');
+
+	var texture = loadTexture('src/thick.png');
 	var box = BufferMesh(BOX_MESH);
-	
+
 	explosion.update = function (dt)
 	{
 		t += dt;
@@ -234,16 +234,12 @@ function createExplosion(pos, color, num)
 		if (t > 1)
 			removeEntity(explosion);
 	};
-	
+
 	var mtx = mat4.create();
 	explosion.render = function(worldMtx)
 	{
-		var alpha = (t < 0) ? 1 : 1 - t;
-//		setPulse(0);
-//		setTexScale(1.0);
-//		setColor([color[0], color[1], color[2], alpha]);			
-		setTexture(texture);
-		
+		var alpha = (t < 0) ? 1 : 1 - t;			
+	
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 		gl.enable(gl.BLEND);
 	
@@ -269,7 +265,9 @@ function createExplosion(pos, color, num)
 			mat4.scale(mtx, [z, z, z]);
 			mat4.translate(mtx, [-0.5, -0.5, -0.5]);			
 			
-			DrawMesh(box, mtx);
+			TEX_SHADER.enable(texture);
+			TEX_SHADER.setColor([color[0], color[1], color[2], alpha]);
+			DrawMesh(box, mtx, TEX_SHADER);
 		}
 		
 		gl.disable(gl.BLEND);
@@ -709,16 +707,16 @@ function loadResources()
 
 // static crate
 var gBox;
-function Box(position, rotation) {
-	var b = StaticEntity({}, SQUARE_MAP.staticModels[0].mesh, Mat4Scale(2, 2, 2));
-	b.texture = loadTexture(SQUARE_MAP.staticModels[0].texture);
+// function Box(position, rotation) {
+// 	var b = new GSStaticEntity(SQUARE_MAP.staticModels[0].mesh, Mat4Scale(2, 2, 2))
+// 	b.texture = loadTexture(SQUARE_MAP.staticModels[0].texture);
 	
 	
-	if (position) {
-		b.pos = position;
-		if (rotation) b.rot = rotation;
-	}
+// 	if (position) {
+// 		b.pos = position;
+// 		if (rotation) b.rot = rotation;
+// 	}
 	
-	return b;
-}
+// 	return b;
+// }
 
