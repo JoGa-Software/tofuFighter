@@ -105,7 +105,7 @@ class GSPlayer extends GSTofu{
         gl.depthMask(false);
         TEX_SHADER.enable(this.skyboxTexture);
         TEX_SHADER.setColor([1,1,1, 1.0]);
-        DrawMesh(this.skyboxMesh, newMat, TEX_SHADER);
+        DrawMesh(this.skyboxMesh, Mat4List(newMat), TEX_SHADER);
         gl.depthMask(true);
     }
 
