@@ -123,6 +123,7 @@ function listFile(file) { handler[file] = staticFileHandler(file); }
 // list of files on the server
 handler["index.html"] 	= root;
 handler["socket.io.js"] = staticFileHandler("node_modules/socket.io-client/socket.io.js");
+
 listFile("favicon.ico");
 listFile("src/server.js");
 listFile("src/temp.js");
@@ -155,18 +156,34 @@ listFile("src/entities/GSTofu.js");
 listFile("src/entities/GSPlayer.js");
 listFile("src/entities/GSNetPlayer.js");
 
-//textures
-listFile("src/skyBox.png");
-listFile("src/thick.png");
-listFile("src/thin.png");
-listFile("src/G36CTex.png");
-listFile("src/tofuTex.png");
 
 handler["admin"] = admin(stats, statlog);
+
+
+//////////////
+// LOAD GFX	//
+//////////////
+
+/**
+ * Dynamically adds all image files stores in 'src/assets/gfx' to the server
+ */
+function loadGFX() {
+	fs.readdir("src/assets/gfx", function(err, files) {
+		files.forEach((file) => {
+			if (file == ".DS_Store") {return}
+			var extension = file.split('.').pop();
+			if (extension === "png" || extension === "jpg") {
+				listFile(`src/assets/gfx/${file}`);
+			}
+		})
+	});
+}
+loadGFX();
 
 //////////////
 //Map Loader//
 //////////////
+
 function loadMapFiles(){
 	fs.readdir("src/maps", function(err, dirs) {
 		dirs.forEach((dir) => {

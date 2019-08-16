@@ -1,12 +1,19 @@
 <html>
 	<head>
 		<title>Tofu Fighter</title>
+		<!-- Loads all script files needed to run the game -->
 		<script src="src/includes.js"></script>
-
-		<script src="src/utils/GSInput.js"></script>
 
 		<script>
 			var singleplayer = false;
+
+			window.onresize = function(event) {
+				// var game = document.getElementById('body');
+				// game.width = window.innerWidth;
+				// game.height = window.innerHeight;
+
+				//TODO: update this to resize the game window when the page is resized
+			}
 		</script>	
 		<style>
 			#game {

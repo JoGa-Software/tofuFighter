@@ -1,5 +1,6 @@
-//ENGINE
 loadIncludes([
+
+    //ENGINE
     "socket.io.js",
 	"src/glMatrix-0.9.5.min.js",
     "src/tedge.js",
@@ -11,21 +12,14 @@ loadIncludes([
     "src/textures.js",
     "src/particles.js",
     "src/temp.js",
-]);
 
-//MAPS
-loadIncludes([
+    //INPUT
+    "src/utils/GSInput.js",
+
+    //MAPS
     "src/maps/square/map.js",
-]);
 
-//SCREENS
-loadIncludes([
-    "src/screens/GSGame.js",
-    "src/screens/GSLoadingScreen.js"
-]);
-
-//ENTITIES
-loadIncludes([
+    //ENTITIES
     "src/entities/GSStaticEntity.js",		
     "src/entities/GSDynamicEntity.js",		
     "src/entities/GSMap.js",		
@@ -33,12 +27,14 @@ loadIncludes([
     "src/entities/GSTofu.js",		
     "src/entities/GSPlayer.js",		
     "src/entities/GSNetPlayer.js",	
-]);
 
-//MESHES
-loadIncludes([
+    //MESHES
     "src/meshes.js",
-    "src/meshes/smg.js"
+    "src/meshes/smg.js",
+
+    //SCREENS
+    "src/screens/GSGame.js",
+    "src/screens/GSLoadingScreen.js",
 ]);
 
 /////////////////////////////////////////

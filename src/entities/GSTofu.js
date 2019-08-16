@@ -6,10 +6,10 @@ class GSTofu extends GSDynamicEntity
         super(TOFU_MESH);
 
         BufferMesh(G36C_MESH);
-        this.gunTexture = loadTexture("./src/G36CTex.png");
+        this.gunTexture = loadTexture("./src/assets/gfx/G36CTex.png");
 
         //set the texture of tofu
-        this.texture = loadTexture("./src/tofuTex.png");
+        this.texture = loadTexture("./src/assets/gfx/tofuTex.png");
         
         //set the position
         this.pos = position ? position : [0, 0, 0];

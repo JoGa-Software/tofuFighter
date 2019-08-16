@@ -11,7 +11,7 @@ class GSPlayer extends GSTofu{
         
         this.netSync = 0.0;
 
-        this.skyboxTexture = loadTexture('src/skyBox.png');
+        this.skyboxTexture = loadTexture('src/assets/gfx/skybox.png');
         this.skyboxMesh = CloneMesh(SKYBOX_MESH);
 
         BufferMesh(this.skyboxMesh)

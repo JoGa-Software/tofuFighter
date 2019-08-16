@@ -8,7 +8,7 @@ class GSBullet extends GSDynamicEntity {
 		var vel = shooter.vel;
 		var mag = -Math.sqrt(vel[0]*vel[0]+vel[1]*vel[1]+vel[2]*vel[2])		
 		
-		this.texture = loadTexture('src/thick.png');
+		this.texture = loadTexture('src/assets/gfx/thick.png');
         this.pos = pos;
         this.vel = Mat4TransformPoint(VecScale(VEC_BACKWARD, BULLET_SPEED+mag), Mat4Rotate(rotation));
         this.force = Vector3();

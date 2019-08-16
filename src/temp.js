@@ -222,7 +222,7 @@ function createExplosion(pos, color, num)
 		particles.push(p);
 	}
 
-	var texture = loadTexture('src/thick.png');
+	var texture = loadTexture('src/assets/gfx/thick.png');
 	var box = BufferMesh(BOX_MESH);
 
 	explosion.update = function (dt)
