@@ -1,4 +1,4 @@
-var BULLET_SPEED = -6;
+var BULLET_SPEED = -8;
 var BULLET_LIFE = 10;
 class GSBullet extends GSDynamicEntity {
 
@@ -56,18 +56,15 @@ class GSBullet extends GSDynamicEntity {
 	
 	render() {
 		TEX_SHADER.enable(this.texture);
-		gl.enable(gl.BLEND);
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-		gl.depthMask(false);
+
 
 		var matrix = Mat4World(this.pos, this.rot);
 		matrix = Mat4Mult(Mat4Scale(this.size), matrix);
+
 		TEX_SHADER.setColor(this.color);
 		matrix = Mat4List(matrix);
 		DrawMesh(this.mesh, matrix, TEX_SHADER);
 
-		gl.depthMask(true);
-		gl.disable(gl.BLEND);
 		TEX_SHADER.setColor(1, 1, 1, 1);
 	}
 

@@ -44,6 +44,7 @@ class GSGame
 		new GSLoadingScreen([
 			[TOFU_MESH, "mesh"],
 			["src/assets/gfx/thick.png", "texture"],
+			["src/assets/gfx/skybox.png", "texture"],
 		], () => {
 			//call finished loadding after loading has finished
 			this.finishedLoading();

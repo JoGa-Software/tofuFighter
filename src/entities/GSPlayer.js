@@ -31,6 +31,9 @@ class GSPlayer extends GSTofu{
 			if (this.keyDown(K_D)){
 				this.strafeRight();
             }
+            if (this.keyDown(K_SPACE)){
+                console.log("jumping")
+            }
             
             if (this.mouseDown(M_LEFT)){
                 this.shoot();
@@ -40,7 +43,7 @@ class GSPlayer extends GSTofu{
 			this.mouseMove = this.mouseMovement();
 
 			//only move the aimer if the mouse has moved and the movement was large enough
-			if (this.mouseMove[0] != this.oldMouseMove[0] && Math.abs(this.mouseMove[0]) > 5){
+			if (!this.dead && this.mouseMove[0] != this.oldMouseMove[0] && Math.abs(this.mouseMove[0]) > 5){
 				this.rot = QuatMult(this.rot, QuatXYZ(0.0, -this.mouseMove[0]*.001, 0.0));
             }
         }

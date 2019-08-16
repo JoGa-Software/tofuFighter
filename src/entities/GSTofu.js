@@ -3,7 +3,7 @@ class GSTofu extends GSDynamicEntity
 {
     constructor(position, rotation)
     {
-        super(TOFU_MESH);
+        super([TOFU_MESH, TOFU_MESH2], undefined, ANIM_SHADER);
 
         BufferMesh(G36C_MESH);
         this.gunTexture = loadTexture("./src/assets/gfx/G36CTex.png");
@@ -67,6 +67,8 @@ class GSTofu extends GSDynamicEntity
     }
 
     update(dt){
+        super.update(dt);
+        
         if (this.dead){
             this.spawnTimer-=dt;
             if (this.spawnTimer < 0)

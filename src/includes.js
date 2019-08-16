@@ -16,6 +16,10 @@ loadIncludes([
     //INPUT
     "src/utils/GSInput.js",
 
+    //MESHES
+    "src/meshes.js",
+    "src/meshes/smg.js",
+
     //MAPS
     "src/maps/square/map.js",
 
@@ -27,10 +31,6 @@ loadIncludes([
     "src/entities/GSTofu.js",		
     "src/entities/GSPlayer.js",		
     "src/entities/GSNetPlayer.js",	
-
-    //MESHES
-    "src/meshes.js",
-    "src/meshes/smg.js",
 
     //SCREENS
     "src/screens/GSGame.js",
