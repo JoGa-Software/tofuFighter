@@ -25,6 +25,8 @@ K_RIGHT = 39;
 K_UP	= 38;
 K_LEFT  = 37;
 K_SPACE = 32;
+K_TILDE   = 192;
+K_RETURN  = 13;
 
 M_LEFT		= 0;
 M_MIDDLE 	= 1;
@@ -71,7 +73,7 @@ function InputtingEntity(e)
 function onKeyDown(evt) 
 {
     if (!evt) evt = window.event;
-    
+
     keysDown[evt.keyCode] = true;
     keysHit[evt.keyCode] = true;
 

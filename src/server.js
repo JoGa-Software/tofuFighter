@@ -273,9 +273,10 @@ io.on('connection', function(client)
 		if ("keys" in msg) cast["keys"] = msg["keys"];
 		if ("id" in msg) cast["id"] = msg["id"];
 		if ("side" in msg) cast["side"] = msg["side"];
-    
-		// client.broadcast.json.send(cast);
-		broadcastSend(cast, client);
+		if ("netName" in msg) cast["netName"] = msg["netName"];
+		if ("message" in msg) cast["message"] = msg["message"];
+		
+		broadcastSend(cast, msg["event"] != "chatMessage" ? client : null);
 	}); 
 	
 	// client disconnect
