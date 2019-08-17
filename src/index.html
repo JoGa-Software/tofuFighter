@@ -5,7 +5,45 @@
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-145832436-2"></script>
 		
 		<!-- Loads all script files needed to run the game -->
-		<script src="src/includes.js"></script>
+		<!-- <script src="src/includes.js"></script> -->
+
+		<!-- Includes -->
+		<!-- //ENGINE -->
+		<script src="socket.io.js"></script>
+		<script src="src/glMatrix-0.9.5.min.js"></script>
+		<script src="src/tedge.js"></script>
+		<script src="src/net.js"></script>
+		<script src="src/dev.js"></script>
+		<script src="src/shaders.js"></script>
+		<script src="src/physics.js"></script>
+		<script src="src/csg.js"></script>
+		<script src="src/textures.js"></script>
+		<script src="src/particles.js"></script>
+		<script src="src/temp.js"></script>
+	
+		<!-- //INPUT -->
+		<script src="src/utils/GSInput.js"></script>
+	
+		<!-- //MESHES -->
+		<script src="src/meshes.js"></script>
+		<script src="src/meshes/smg.js"></script>
+	
+		<!-- //MAPS -->
+		<script src="src/maps/square/map.js"></script>
+	
+		<!-- //ENTITIES -->
+		<script src="src/entities/GSStaticEntity.js"></script>		
+		<script src="src/entities/GSDynamicEntity.js"></script>
+		<script src="src/entities/GSMap.js"></script>
+		<script src="src/entities/GSBullet.js"></script>
+		<script src="src/entities/GSTofu.js"></script>
+		<script src="src/entities/GSPlayer.js"></script>
+		<script src="src/entities/GSNetPlayer.js"></script>
+		<script src="src/entities/GSHUD.js"></script>
+	
+		<!-- //SCREENS -->
+		<script src="src/screens/GSGame.js"></script>
+		<script src="src/screens/GSLoadingScreen.js"></script>
 
 		<script>
 			var singleplayer = false;
