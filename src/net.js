@@ -68,11 +68,14 @@ function netMessage(resp)
             }else {
                 color = netPlayers[user].color
             }
-            console.log(`rgb(${color[0]*255.0}, ${color[1]*255.0}, ${color[2]*255.0})`)
+            
+            //get the stripped message
+            var message = checkForCommands(strip(resp["message"]))
+
             //add the new message
             var li = document.createElement("LI");
             li.innerHTML = `
-                <font style="color:rgb(${color[0]*255.0}, ${color[1]*255.0}, ${color[2]*255.0})">${resp["netName"]}(${timeString}):</font> ${resp["message"]}
+                <font style="color:rgb(${color[0]*255.0}, ${color[1]*255.0}, ${color[2]*255.0})">${resp["netName"]}(${timeString}):</font> ${message}
             `
             chatDisplay.appendChild(li)
         }
@@ -89,4 +92,28 @@ function netConnect()
     game.socket = io();
     game.socket.on('disconnect', function(){game.connected = false;});
     game.socket.on('message', netMessage);
+}
+
+/**
+ * Strips the HTML and Javascript from a string (used to avoid hacking)
+ * @param {*} html - the string to strip bad content from
+ */
+function strip(html){
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+}
+
+var commandList = {
+    image: /^(\/img ){1}/,
+}
+function checkForCommands(message) {
+
+    Object.keys(commandList).forEach((key) => {
+        var value = commandList[key]
+        if (value.test(message)){
+            console.log(`got ${key} command`)
+            message = message.replace(value, "")
+        }
+    })
+    return message;
 }
