@@ -103,7 +103,7 @@ class GSPlayer extends GSTofu{
 
         var newMat = Mat4Mult(Mat4Translate([-0.2,1.5,0.55]), this.matrix)
         newMat = Mat4Mult(Mat4Rotate(rot), newMat)
-        newMat = Mat4Mult(Mat4Scale(5,5,5), newMat)
+        // newMat = Mat4Mult(Mat4Scale(2,2,2), newMat)
 
         gl.depthMask(false);
         TEX_SHADER.enable(this.skyboxTexture);
