@@ -31,6 +31,7 @@ loadIncludes([
     "src/entities/GSTofu.js",		
     "src/entities/GSPlayer.js",		
     "src/entities/GSNetPlayer.js",	
+    "src/entities/GSHUD.js",	
 
     //SCREENS
     "src/screens/GSGame.js",

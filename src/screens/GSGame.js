@@ -74,6 +74,10 @@ class GSGame
 		gCamera = createFPSCamera(this.tofu);//TrackingCamera(this.tofu);
 		entities.push(gCamera);
 
+		//create the hud
+		var hud = new GSHUD()
+		entities.push(hud)
+
 		netConnect();
 		
 		//run the game engine 

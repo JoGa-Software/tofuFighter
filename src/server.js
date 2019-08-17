@@ -155,6 +155,7 @@ listFile("src/entities/GSBullet.js");
 listFile("src/entities/GSTofu.js");
 listFile("src/entities/GSPlayer.js");
 listFile("src/entities/GSNetPlayer.js");
+listFile("src/entities/GSHUD.js");
 
 
 handler["admin"] = admin(stats, statlog);
