@@ -41,43 +41,7 @@ function netMessage(resp)
         }
         else if (resp['event'] == 'chatMessage') 
         {
-            //get a reference to the chat display
-            var chatDisplay = document.getElementById("chatDisplay")
-            
-            //remove the oldest messages 
-            if (chatDisplay.children.length > 10) {
-                chatDisplay.removeChild(chatDisplay.children[0])
-            }
-
-            var pad2 = function(number) {
-                return (number < 10 ? '0' : '') + number
-            }
-
-            //get the time string
-            var currentdate = new Date(); 
-            var hours = currentdate.getHours()
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours%12
-            hours = hours ? hours : 12
-            var timeString = `${pad2(hours)}:${pad2(currentdate.getMinutes())}${ampm}`
-
-            //get the color
-            var color;
-            if (game.user_id == user) {
-                color = game.tofu.color
-            }else {
-                color = netPlayers[user].color
-            }
-            
-            //get the stripped message
-            var message = checkForCommands(strip(resp["message"]))
-
-            //add the new message
-            var li = document.createElement("LI");
-            li.innerHTML = `
-                <font style="color:rgb(${color[0]*255.0}, ${color[1]*255.0}, ${color[2]*255.0})">${resp["netName"]}(${timeString}):</font> ${message}
-            `
-            chatDisplay.appendChild(li)
+            handleChatMessageResponse(resp);
         }
         else
         {
@@ -103,17 +67,64 @@ function strip(html){
     return doc.body.textContent || "";
 }
 
-var commandList = {
-    image: /^(\/img ){1}/,
-}
-function checkForCommands(message) {
-
-    Object.keys(commandList).forEach((key) => {
-        var value = commandList[key]
-        if (value.test(message)){
-            console.log(`got ${key} command`)
-            message = message.replace(value, "")
-        }
+/**
+ * Default method used for sending messages to the server
+ * @param {String} eventType - the event type of the message being sent
+ * @param {Object} contents - contents of the message being sent
+ */
+function sendNetMessage(eventType, contents) {
+    game.socket.emit("message", {
+        id: game.user_id,
+        netName: game.netName,
+        event: eventType,
+        ...contents
     })
-    return message;
+}
+
+/**
+ * Handles all incoming chat messages from the server
+ * @param {Object} resp - the response from the server
+ */
+function handleChatMessageResponse(resp) {
+    var user = resp['id']
+
+    //get a reference to the chat display
+    var chatDisplay = document.getElementById("chatDisplay")
+                
+    //remove the oldest messages 
+    if (chatDisplay.children.length > 10) {
+        chatDisplay.removeChild(chatDisplay.children[0])
+    }
+
+    var pad2 = function(number) {
+        return (number < 10 ? '0' : '') + number
+    }
+
+    //get the time string
+    var currentdate = new Date(); 
+    var hours = currentdate.getHours()
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours%12
+    hours = hours ? hours : 12
+    var timeString = `${pad2(hours)}:${pad2(currentdate.getMinutes())}${ampm}`
+
+    //get the color
+    var color;
+    if (game.user_id == user) {
+        color = game.tofu.color
+    }else if (user == 0) {
+        color = SERVER_COLOR
+    } else {
+        color = netPlayers[user].color
+    }
+
+    //get the stripped message
+    var message = strip(resp["message"])
+
+    //add the new message
+    var li = document.createElement("LI");
+    li.innerHTML = `
+        <font style="color:rgb(${color[0]*255.0}, ${color[1]*255.0}, ${color[2]*255.0})">${resp["netName"]} (${timeString}):</font> ${message}
+    `
+    chatDisplay.appendChild(li)
 }

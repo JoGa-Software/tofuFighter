@@ -54,9 +54,7 @@ class GSPlayer extends GSTofu{
         this.netSync+= dt;
         if (game.connected && this.pos && this.netSync > 0.067){ 
 
-            game.socket.emit('message', {
-                event: 'pos',
-                id: game.user_id,
+            sendNetMessage('pos', {
                 pos: this.pos,
                 rot: this.rot,
                 keys: {
@@ -73,13 +71,11 @@ class GSPlayer extends GSTofu{
     shoot(){
         if (this.dead === true){ return; }
         super.shoot();
-        game.socket.emit('message', {
-            event: 'shoot',
-            id: game.user_id,
+        sendNetMessage('shoot', {
             pos: this.pos,
             rot: this.rot,
             matrix: this.matrix
-        });
+        })
     }
 
     spawn(){
@@ -88,10 +84,7 @@ class GSPlayer extends GSTofu{
     }
 
     die(){
-        game.socket.emit("message", {
-            event: 'die',
-            id: game.user_id
-        });
+        sendNetMessage('die', null)
         super.die();
     }
 

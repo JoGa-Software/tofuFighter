@@ -11,13 +11,15 @@ var ROTATIONAL_INERTIA = true;
 var flashColor = [1, 1, 1];
 
 var COLORS = [
-	[1.0, 1.0, 1.0],
-	[0.0, 1.0, 0.0],
-	[1.0, 0.0, 0.0],
-	[1.0, 1.0, 0.0],	
-	[0.0, 0.8, 1.0],
-	[1.0, 0.6, 0.0]
+	[233 	/ 255.0, 108 	/ 255.0, 2 		/ 255.0],
+	[115 	/ 255.0, 229 	/ 255.0, 4 		/ 255.0],
+	[3 		/ 255.0, 216 	/ 255.0, 163 	/ 255.0],	
+	[228 	/ 255.0, 2 		/ 255.0, 166 	/ 255.0],
+	[4 		/ 255.0, 146 	/ 255.0, 226 	/ 255.0],
+	[130 	/ 255.0, 3 		/ 255.0, 224 	/ 255.0]
 ];
+
+var SERVER_COLOR = [234 	/ 255.0, 2 		/ 255.0, 2 		/ 255.0]
 
 //////////////////////////////////////////////////////
 // GAME ENTITIES
@@ -541,9 +543,7 @@ function createPlayer()
 		else if (K_SPACE && player.pos)
 		{
 			player.shoot(shootSide);
-			socket.emit('message', {
-				event: 'shoot',
-				id: user_id,
+			sendNetMessage('shoot', {
 				pos: player.pos,
 				vel: player.vel,
 				accl: player.accl,
@@ -578,9 +578,7 @@ function createPlayer()
 		netSync += dt;
 		if (connected && player.pos && netSync > 0.067)
 		{
-			socket.emit('message', {
-				event: 'pos',
-                id: user_id,
+			sendNetMessage('pos', {
 				pos: player.pos,
 				vel: player.vel,
 				accl: player.accl,
@@ -613,10 +611,7 @@ function createPlayer()
 	var tankDie = player.die;
 	player.die = function ()
 	{
-		socket.emit('message', {
-			event: 'die',
-			id:	user_id
-		});
+		sendNetMessage('die', null);
 		tankDie();
 	}
 	

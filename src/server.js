@@ -130,6 +130,7 @@ listFile("src/temp.js");
 listFile("src/tedge.js");
 listFile("src/includes.js");
 listFile("src/utils/GSInput.js");
+listFile("src/utils/ChatCommands.js");
 listFile("src/net.js");
 listFile("src/screens/GSLoadingScreen.js");
 listFile("src/screens/GSGame.js");
@@ -232,12 +233,25 @@ server.listen(port);
 
 // SOCKET.IO SERVER //////////////////////////////////////////////////////////
 
+let MAX_CHAT_COUNT = 10
+var chatLog = [];
+
 function broadcastSend(data, except) {
 	clients.map(function (C) {
 		if (C != except) {
 			C.volatile.emit('message', data);
 		}
 	});
+}
+
+function sendServerMessage(message) {
+	var newPlayerMessage = {
+		event: 'chatMessage',
+		id: 0,
+		netName: '[Server]',
+		message: message
+	} 
+	broadcastSend(newPlayerMessage, null)
 }
 
 var io = sio(server); 
@@ -251,6 +265,7 @@ io.on('connection', function(client)
 	statlog("New connection from " + IP);
 	// new player connected
 	var user_id = uid++;
+	var user_name = `Anon_${user_id}`
 	clients[user_id] = client;
 
 	stats.totalUsers++;
@@ -275,6 +290,8 @@ io.on('connection', function(client)
 		if ("side" in msg) cast["side"] = msg["side"];
 		if ("netName" in msg) cast["netName"] = msg["netName"];
 		if ("message" in msg) cast["message"] = msg["message"];
+
+		if ("netName" in cast) user_name = cast["netName"];
 		
 		broadcastSend(cast, msg["event"] != "chatMessage" ? client : null);
 	}); 
@@ -286,12 +303,18 @@ io.on('connection', function(client)
 		console.log(user_id + " disconnected.");
 		delete clients[user_id];
 		stats.currentUsers--;
+
+		//send server message regarding new player
+		sendServerMessage(`${user_name} has left`)
 	});
 	
 	// begin the handshake
 	client.emit('message', {event: "hi", id: user_id});
 	
 	console.log("New player with id " + user_id);
+
+	//send server message regarding new player
+	sendServerMessage(`${user_name} has joined`)
 }); 
 
 // heroku shutdown

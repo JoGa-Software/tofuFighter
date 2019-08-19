@@ -118,14 +118,14 @@ class GSGame
 				//get the chat box
 				var chatBox = document.getElementById("chatBox");
 	
+				var message = checkForCommands(chatBox.value.trim())
+
 				//if there is a message to be sent then send it
-				if (chatBox.value.trim().length > 0) {
-					this.socket.emit('message', {
-						event: 'chatMessage',
-						id: game.user_id,
-						netName: game.netName,
-						message: chatBox.value
-					});
+				if (message.length > 0) {
+
+					sendNetMessage('chatMessage', {
+						message: message
+					})
 				}
 
 				//clear the chat box
