@@ -12,6 +12,12 @@ function netMessage(resp)
         game.connected = true;
         game.tofu.color = COLORS[game.user_id % COLORS.length];
     }
+    else if (resp["event"] == "serverFull") 
+    {
+        document.open()
+        document.write("<h1>server is full. Try again, maybe someone will leave soon.</h1>")
+        document.close()
+    }
     else
     {
         var user = resp['id'];
