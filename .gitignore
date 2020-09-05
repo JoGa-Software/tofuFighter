@@ -3,3 +3,4 @@ npm-debug.log
 .DS_Store
 /*.env
 stats.json
+ASSET_STORE
