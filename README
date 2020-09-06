@@ -1,1 +1,10 @@
 README
+
+# Running the project
+1) download and install node.js
+2) open a terminal window and navigate to the project root folder
+3) run "npm install"
+4) run "npm run start"
+5) open a browser window with the address: "localhost:8000"
+
+Thats it!
