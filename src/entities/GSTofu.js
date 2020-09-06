@@ -59,7 +59,7 @@ class GSTofu extends GSDynamicEntity
 
     shoot(){
         if (this.shootDelay <= 0){
-            var pos = Mat4TransformPoint([-0.35, 1, 1.55], this.matrix);
+            var pos = Mat4TransformPoint([-0.20, 1.22, 0.9], this.matrix);
             var bullet = new GSBullet(this, pos, this.rot);
             entities.push(bullet);
             this.shootDelay = SHOOT_DELAY;
@@ -110,9 +110,9 @@ class GSTofu extends GSDynamicEntity
             if (this.color) {
                 TEX_SHADER.setColor([this.color[0], this.color[1], this.color[2], 1.0]);
             }
-			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.55]),this.matrix)), TEX_SHADER);
+			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.7]),this.matrix)), TEX_SHADER);
 		} else {
-			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.55]),this.matrix)), this.shader);
+			DrawMesh(G36C_MESH, Mat4List(Mat4Mult(Mat4Translate([-0.2, 1, 0.7]),this.matrix)), this.shader);
         }
         TEX_SHADER.setColor([1,1,1,1]);
     }

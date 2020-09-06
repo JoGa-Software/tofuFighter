@@ -1,8 +1,3 @@
-/* js tanks server
- * 7/23/2011
- * aizuwakamatsu, fukushimaken, japan
- */
-
 var admin = require('./admin.js');
 // NODE LIBRARIES ////////////////////////////////////////////////////////////
 var http	= require('http');
@@ -126,27 +121,25 @@ handler["socket.io.js"] = staticFileHandler("node_modules/socket.io-client/socke
 
 listFile("favicon.ico");
 listFile("src/server.js");
-listFile("src/temp.js");
-listFile("src/tedge.js");
-listFile("src/includes.js");
+listFile("src/utils/constants.js");
+listFile("src/utils/createExplosion.js")
+listFile("src/tedge/tedge.js");
 listFile("src/utils/GSInput.js");
-listFile("src/utils/ChatCommands.js");
-listFile("src/net.js");
+listFile("src/net/ChatCommands.js");
+listFile("src/net/net.js");
 listFile("src/screens/GSLoadingScreen.js");
 listFile("src/screens/GSGame.js");
-listFile("src/dev.js");
-listFile("src/shaders.js");
-listFile("src/physics.js");
+listFile("src/utils/textSprite.js");
+listFile("src/tedge/shaders.js");
+listFile("src/tedge/physics.js");
 
 //meshes
-listFile("src/meshes.js");
+listFile("src/meshes/meshes.js");
 listFile("src/meshes/smg.js");
 
 //stuff
-listFile("src/csg.js");
-listFile("src/textures.js");
-listFile("src/particles.js");
-listFile("src/glMatrix-0.9.5.min.js");
+listFile("src/tedge/particles.js");
+listFile("src/utils/glMatrix-0.9.5.min.js");
 
 //entities
 listFile("src/entities/GSStaticEntity.js");
@@ -257,6 +250,12 @@ function sendServerMessage(message) {
 var io = sio(server); 
 io.on('connection', function(client)
 { 
+	if (stats.currentUsers+1 > 50) {
+		client.emit('message', {event: "serverFull", id: user_id});
+		client.disconnect()
+		return
+	}
+
 	var request = client.request;
 	var IP = request.headers['x-forwarded-for'] || 
 		request.connection.remoteAddress || 
@@ -266,6 +265,7 @@ io.on('connection', function(client)
 	// new player connected
 	var user_id = uid++;
 	var user_name = `Anon_${user_id}`
+
 	clients[user_id] = client;
 
 	stats.totalUsers++;
@@ -306,12 +306,15 @@ io.on('connection', function(client)
 
 		//send server message regarding new player
 		sendServerMessage(`${user_name} has left`)
+
+		console.log("server count:" + stats.currentUsers);
 	});
 	
 	// begin the handshake
 	client.emit('message', {event: "hi", id: user_id});
-	
+
 	console.log("New player with id " + user_id);
+	console.log("server count:" + stats.currentUsers);
 
 	//send server message regarding new player
 	sendServerMessage(`${user_name} has joined`)
